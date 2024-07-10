@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[7],{IsZG:function(e,t,n){"use strict";n.r(t);var s=n("5rCo"),a={__name:"Crazedpoem",setup:e=>({__sfc:!0,Chat:s.a})},o=n("KHd+"),r=Object(o.a)(a,(function(){return(0,this._self._c)(this._self._setupProxy.Chat,{attrs:{channel:"crazedpoem"}})}),[],!1,null,null,null);t.default=r.exports}}]);
