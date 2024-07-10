@@ -109,8 +109,6 @@ let flareColour = 'text-yellow-300';
 let messageFlare = '';
 let userLevel = '';
 
-// Check if this is the streamer's message
-
 if (props.tags['user-id'] === props.tags['room-id']) {
   messageAccent = 'bg-red-500 text-white';
   flareColour = 'text-red-500';
