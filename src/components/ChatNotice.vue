@@ -46,10 +46,16 @@ const props = defineProps({
   message: {
     type: String,
     required: true
+  },
+  tilt: {
+    type: Boolean,
+    required: false,
+    default: true
   }
 });
 
 function randomRotation() {
+  if (!props.tilt) return 0;
   return (Math.floor(Math.random() * 500) - 200) / 100;
 }
 

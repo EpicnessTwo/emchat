@@ -104,6 +104,11 @@ const props = defineProps({
   tags: {
     type: Object,
     required: true
+  },
+  tilt: {
+    type: Boolean,
+    required: false,
+    default: true
   }
 });
 
@@ -188,6 +193,7 @@ function parseMessage(message, emotes) {
 }
 
 function randomRotation() {
+  if (!props.tilt) return 0;
   return (Math.floor(Math.random() * 500) - 200) / 100;
 }
 

@@ -1,17 +1,23 @@
 <template>
-  <div ref="chatBox" class="chat-box p-4 h-screen w-full overflow-hidden bg-purple-200">
+  <div ref="chatBox" class="chat-box p-4 h-screen w-full overflow-hidden bg-purple-200" :style="{
+    'transform': easterEggs.flip ? 'rotate(180deg)' : '',
+  }">
     <transition-group name="list" tag="ul">
-      <li v-for="(message, index) in messages" :key="message.id" class="mb-2 break-words">
+      <li v-for="(message, index) in messages" :key="message.id" class="mb-2 break-words" :class="{
+        'party': easterEggs.party,
+      }">
         <ChatMessage
             :username="message.username"
             :message="message.message"
             :tags="message.tags"
+            :tilt="easterEggs.tilt"
             v-if="message.type === 'message'"
             v-once
         ></ChatMessage>
         <ChatNotice
           :username="message.username"
           :message="message.message"
+          :tilt="easterEggs.tilt"
           v-if="message.type === 'notice'"
           v-once
       ></ChatNotice>
@@ -37,6 +43,11 @@ const messages = ref([]);
 const vips = ref([]);
 const chatBox = ref(null)
 const pruneLength = 20;
+const easterEggs = {
+  'flip': false,
+  'tilt': true,
+  'party': false,
+};
 
 const initializeChat = () => {
   const client = new tmi.Client({
@@ -51,6 +62,33 @@ const initializeChat = () => {
   client.connect();
 
   client.on('message', (channel, tags, message, self) => {
+    // Reload Function
+    if (tags['display-name'] === 'EpicKittyXP') {
+      switch (message) {
+        case '~reload':
+          messages.value.push({
+            type: 'notice',
+            id: tags.id,
+            username: tags['display-name'],
+            message: `is reloading the chat...`
+          });
+          // Reload the page in 5 seconds
+          setTimeout(() => {
+            window.location.reload();
+          }, 5000);
+          break;
+        case '~flip':
+          easterEggs.flip = !easterEggs.flip;
+          break;
+        case '~tilt':
+          easterEggs.tilt = !easterEggs.tilt;
+          break;
+        case '~party':
+          easterEggs.party = !easterEggs.party;
+          break;
+      }
+    }
+
     // truncate username to max of 20 characters and add ellipsis if necessary
     tags['display-name'] = tags['display-name'].length > 16 ? tags['display-name'].substring(0, 20) + '...' : tags['display-name'];
     messages.value.push({
@@ -177,5 +215,18 @@ onMounted(() => {
 .list-enter, .list-leave-to {
   transform: scale(0.8) translateY(30px);
   opacity: 0;
+}
+
+.party {
+  animation: party 1s infinite linear;
+}
+
+@keyframes party {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    filter: hue-rotate(360deg);
+  }
 }
 </style>
