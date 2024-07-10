@@ -1,5 +1,5 @@
 <template>
-  <div ref="chatBox" class="chat-box p-4 h-screen w-full overflow-hidden bg-black">
+  <div ref="chatBox" class="chat-box p-4 h-screen w-full overflow-hidden bg-purple-200">
     <transition-group name="list" tag="ul">
       <li v-for="(message, index) in messages" :key="message.id" class="mb-2 break-words">
         <ChatMessage
@@ -60,8 +60,6 @@ const initializeChat = () => {
       message: message,
       tags: tags,
     });
-
-    console.log(message, tags);
 
     if (messages.value.length >= pruneLength) {
       messages.value = messages.value.slice(-pruneLength);

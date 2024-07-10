@@ -2,7 +2,7 @@
   <div class="chat-message bg-white px-6 py-4 pb-6 mt-12 mx-4 rounded-xl relative" :class="messageFlare" :style="{
     transform: `rotate(${randomRotation()}deg)`
   }">
-    <div class="absolute h-full w-full top-0 left-0" :class="flareColour">
+    <div class="absolute h-full w-full top-0 left-0 pointer-events-none" :class="flareColour">
       <PetalTop
           :classes="{
           'w-8': true,
@@ -61,11 +61,13 @@
           <Mod v-if="userLevel === 'mod'"></Mod>
           <Host v-if="userLevel === 'host'"></Host>
         </span>
-        {{ username }}</span>
+        <EpicKitty v-if="isEpicKitty"></EpicKitty>
+        {{ username }}
+      </span>
     </div>
     <p class="text-gray-800">
       <template v-if="isSingleEmote">
-        <component :is="Emote" :id="parsedMessage[0].id" :alt="parsedMessage[0].alt" class="h-32 w-auto"></component>
+        <component :is="Emote" :id="parsedMessage[0].id" :alt="parsedMessage[0].alt" class="!h-32 w-auto"></component>
       </template>
       <template v-else>
         <span v-for="part in parsedMessage" :key="part.key">
@@ -74,7 +76,7 @@
         </span>
       </template>
     </p>
-    <div class="rainbow hidden"></div>
+
   </div>
 </template>
 
@@ -88,6 +90,7 @@ import Vip from "./Badges/Vip.vue";
 import Host from "./Badges/Host.vue";
 import PetalTop from "./Flares/petalTop.vue";
 import PetalBottom from "./Flares/petalBottom.vue";
+import EpicKitty from "./Badges/EpicKitty.vue";
 
 const props = defineProps({
   username: {
@@ -108,6 +111,7 @@ let messageAccent = 'bg-yellow-200 text-black';
 let flareColour = 'text-yellow-300';
 let messageFlare = '';
 let userLevel = '';
+let isEpicKitty = false;
 
 if (props.tags['user-id'] === props.tags['room-id']) {
   messageAccent = 'bg-red-500 text-white';
@@ -125,6 +129,10 @@ if (props.tags['user-id'] === props.tags['room-id']) {
   messageAccent = 'bg-pink-400 text-white';
   flareColour = 'text-pink-400';
   userLevel = 'sub';
+}
+
+if (props.tags['display-name'] === 'EpicKittyXP') {
+  isEpicKitty = true;
 }
 
 // Animations
