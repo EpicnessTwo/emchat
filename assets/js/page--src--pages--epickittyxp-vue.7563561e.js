@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[8],{tJGP:function(t,n,e){"use strict";e.r(n);var s=e("5rCo"),p={__name:"Epickittyxp",setup:t=>({__sfc:!0,Chat:s.a})},a=e("KHd+"),c=Object(a.a)(p,(function(){return(0,this._self._c)(this._self._setupProxy.Chat,{attrs:{channel:"epickittyxp"}})}),[],!1,null,null,null);n.default=c.exports}}]);

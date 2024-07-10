@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[11],{XViw:function(n,t,s){"use strict";s.r(t);var a=s("5rCo"),e={__name:"Mikiran",setup:n=>({__sfc:!0,Chat:a.a})},i=s("KHd+"),r=Object(i.a)(e,(function(){return(0,this._self._c)(this._self._setupProxy.Chat,{attrs:{channel:"mikiran"}})}),[],!1,null,null,null);t.default=r.exports}}]);
