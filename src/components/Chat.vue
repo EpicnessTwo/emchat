@@ -72,10 +72,6 @@ const initializeChat = () => {
     messages.value = messages.value.filter((message) => message.id !== userstate['target-msg-id']);
   });
 
-  client.on('vip', (channel, vips) => {
-    console.warn("VIPS: ", vips)
-  });
-
   // Notice message stuffs
 
   client.on('anongiftpaidupgrade', (channel, username, userstate) => {
@@ -101,7 +97,7 @@ const initializeChat = () => {
       type: 'notice',
       id: userstate.id,
       username: username,
-      message: `${sender} has upgraded to a Tier 1 subscription!`
+      message: `has upgraded to a Tier 1 subscription!`
     });
   });
 
@@ -159,19 +155,6 @@ const initializeChat = () => {
       message: `Subscribed!`
     });
   });
-
-
-
-  const getVips = () => {
-    client.vips(channel)
-        .then((data) => {
-          console.warn("DATA: ", data)
-        }).catch((err) => {
-      //
-    });
-  };
-
-  getVips();
 };
 
 const scrollToBottom = () => {
@@ -181,6 +164,7 @@ const scrollToBottom = () => {
 }
 
 onUpdated(scrollToBottom)
+setInterval(scrollToBottom, 1000);
 
 onMounted(() => {
   initializeChat();
