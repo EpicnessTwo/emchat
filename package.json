@@ -1,0 +1,17 @@
+{
+  "name": "EmChat",
+  "private": true,
+  "scripts": {
+    "build": "gridsome build",
+    "develop": "gridsome develop",
+    "explore": "gridsome explore",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
+  },
+  "dependencies": {
+    "axios": "^1.7.2",
+    "gh-pages": "^6.1.1",
+    "gridsome": "^0.7.0",
+    "tmi.js": "^1.8.5"
+  }
+}
