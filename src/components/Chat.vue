@@ -1,6 +1,8 @@
 <template>
-  <div ref="chatBox" class="chat-box p-4 h-screen w-full overflow-hidden bg-purple-200" :style="{
+  <div ref="chatBox" class="chat-box p-4 h-screen w-full overflow-hidden" :style="{
     'transform': easterEggs.flip ? 'rotate(180deg)' : '',
+  }" :class="{
+    'bg-gradient-to-r from-purple-200 to-purple-300': easterEggs.debugBackground,
   }">
     <transition-group name="list" tag="ul">
       <li v-for="(message, index) in messages" :key="message.id" class="mb-2 break-words" :class="{
@@ -47,6 +49,7 @@ const easterEggs = {
   'flip': false,
   'tilt': true,
   'party': false,
+  'debugBackground': false,
 };
 
 const initializeChat = () => {
@@ -72,7 +75,6 @@ const initializeChat = () => {
             username: tags['display-name'],
             message: `is reloading the chat...`
           });
-          // Reload the page in 5 seconds
           setTimeout(() => {
             window.location.reload();
           }, 5000);
@@ -85,6 +87,9 @@ const initializeChat = () => {
           break;
         case '~party':
           easterEggs.party = !easterEggs.party;
+          break;
+        case '~bg':
+          easterEggs.debugBackground = !easterEggs.debugBackground;
           break;
       }
     }
