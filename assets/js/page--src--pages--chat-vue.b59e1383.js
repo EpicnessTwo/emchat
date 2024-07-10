@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[6],{q1WW:function(t,n,e){"use strict";e.r(n);var s=e("5rCo"),a={__name:"Chat",setup:t=>({__sfc:!0,Chat:s.a})},l=e("KHd+"),u=Object(l.a)(a,(function(){return(0,this._self._c)(this._self._setupProxy.Chat,{attrs:{channel:"vedal987"}})}),[],!1,null,null,null);n.default=u.exports}}]);
