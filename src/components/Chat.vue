@@ -1,11 +1,11 @@
 <template>
-  <div ref="chatBox" class="chat-box p-4 h-screen w-full overflow-hidden" :style="{
+  <div ref="chatBox" class="chat-box p-4 h-screen w-full overflow-hidden justify-center flex flex-wrap" :style="{
     'transform': easterEggs.flip ? 'rotate(180deg)' : '',
   }" :class="{
     'bg-gradient-to-r from-purple-200 to-purple-300': easterEggs.debugBackground,
   }">
-    <transition-group name="list" tag="ul">
-      <li v-for="(message, index) in messages" :key="message.id" class="mb-2 break-words" :class="{
+    <transition-group name="list" tag="ul" class="w-full px-4">
+      <li v-for="(message, index) in messages" :key="message.id" class="mb-2 break-words w-full justify-center flex flex-wrap" :class="{
         'party': easterEggs.party,
       }">
         <ChatMessage
@@ -19,6 +19,7 @@
         <ChatNotice
           :username="message.username"
           :message="message.message"
+          :fancy="message.fancy"
           :tilt="easterEggs.tilt"
           v-if="message.type === 'notice'"
           v-once
@@ -51,6 +52,12 @@ const easterEggs = {
   'party': false,
   'debugBackground': false,
 };
+const admins = [
+    'EpicKittyXP',
+    'grazedpoem',
+    'crazedpoem',
+    'TheLegendaryNarrator',
+];
 
 const initializeChat = () => {
   const client = new tmi.Client({
@@ -65,8 +72,7 @@ const initializeChat = () => {
   client.connect();
 
   client.on('message', (channel, tags, message, self) => {
-    // Reload Function
-    if (tags['display-name'] === 'EpicKittyXP') {
+    if (admins.includes(tags['display-name'])) {
       switch (message) {
         case '~reload':
           messages.value.push({
@@ -91,11 +97,91 @@ const initializeChat = () => {
         case '~bg':
           easterEggs.debugBackground = !easterEggs.debugBackground;
           break;
+        case '~fakesub':
+          messages.value.push({
+            type: 'notice',
+            fancy: 'sub',
+            id: tags.id,
+            username: tags['display-name'],
+            message: `Subscribed!`
+          });
+          break;
+        case '~fakebits':
+          messages.value.push({
+            type: 'notice',
+            fancy: 'cheer',
+            id: tags.id,
+            username: tags['display-name'],
+            message: `Cheered 100 bits!`
+          });
+          break;
+        case '~fakegiftsub':
+          messages.value.push({
+            type: 'notice',
+            fancy: 'sub',
+            id: tags.id,
+            username: tags['display-name'],
+            message: `Gifted a subscription to EpicKittyXP!`
+          });
+          break;
+        case '~fakeraid':
+          messages.value.push({
+            type: 'notice',
+            fancy: 'raid',
+            id: tags.id,
+            username: tags['display-name'],
+            message: `has raided with 100 viewers!`
+          });
+          break;
+        case '~fakemysterygift':
+          messages.value.push({
+            type: 'notice',
+            fancy: 'sub',
+            id: tags.id,
+            username: tags['display-name'],
+            message: `Gifted 5 Tier 1 Subscriptions!`
+          });
+          messages.value.push({
+            type: 'notice',
+            fancy: 'sub',
+            id: tags.id++,
+            username: 'SillyUser1',
+            message: `Subscribed!`
+          });
+          messages.value.push({
+            type: 'notice',
+            fancy: 'sub',
+            id: tags.id++,
+            username: 'SillyUser2',
+            message: `Subscribed!`
+          });
+          messages.value.push({
+            type: 'notice',
+            fancy: 'sub',
+            id: tags.id++,
+            username: 'SillyUser3',
+            message: `Subscribed!`
+          });
+          messages.value.push({
+            type: 'notice',
+            fancy: 'sub',
+            id: tags.id++,
+            username: 'SillyUser4',
+            message: `Subscribed!`
+          });
+          messages.value.push({
+            type: 'notice',
+            fancy: 'sub',
+            id: tags.id++,
+            username: 'SillyUser5',
+            message: `Subscribed!`
+          });
+          break;
       }
     }
 
     // truncate username to max of 20 characters and add ellipsis if necessary
-    tags['display-name'] = tags['display-name'].length > 16 ? tags['display-name'].substring(0, 20) + '...' : tags['display-name'];
+    tags['display-name'] = tags['display-name'].length > 20 ? tags['display-name'].substring(0, 20) + '...' : tags['display-name'];
     messages.value.push({
       type: 'message',
       id: tags.id,
@@ -118,6 +204,7 @@ const initializeChat = () => {
   client.on('anongiftpaidupgrade', (channel, username, userstate) => {
     messages.value.push({
       type: 'notice',
+      fancy: true,
       id: userstate.id,
       username: username,
       message: `An anonymous user has upgraded to a Tier 1 subscription!`
@@ -127,6 +214,7 @@ const initializeChat = () => {
   client.on('cheer', (channel, userstate, message) => {
     messages.value.push({
       type: 'notice',
+      fancy: true,
       id: userstate.id,
       username: userstate['display-name'],
       message: `Cheered ${userstate.bits} bits!\n${message}`
@@ -136,6 +224,7 @@ const initializeChat = () => {
   client.on('giftpaidupgrade', (channel, username, sender, userstate) => {
     messages.value.push({
       type: 'notice',
+      fancy: true,
       id: userstate.id,
       username: username,
       message: `has upgraded to a Tier 1 subscription!`
@@ -155,6 +244,7 @@ const initializeChat = () => {
     if (months === 0) {
       messages.value.push({
         type: 'notice',
+        fancy: true,
         id: userstate.id,
         username: username,
         message: `Resubscribed!`
@@ -164,6 +254,7 @@ const initializeChat = () => {
 
     messages.value.push({
       type: 'notice',
+      fancy: true,
       id: userstate.id,
       username: username,
       message: `Resubscribed for ${months} months!`
@@ -173,6 +264,7 @@ const initializeChat = () => {
   client.on('subgift', (channel, username, streakMonths, recipient, methods, userstate) => {
     messages.value.push({
       type: 'notice',
+      fancy: true,
       id: userstate.id,
       username: username,
       message: `Gifted a subscription to ${recipient}!`
@@ -182,6 +274,7 @@ const initializeChat = () => {
   client.on('submysterygift', (channel, username, numbOfSubs, methods, userstate) => {
     messages.value.push({
       type: 'notice',
+      fancy: true,
       id: userstate.id,
       username: username,
       message: `Gifted ${numbOfSubs} Tier 1 Subscriptions!`
@@ -191,6 +284,7 @@ const initializeChat = () => {
   client.on('subscription', (channel, username, method, message, userstate) => {
     messages.value.push({
       type: 'notice',
+      fancy: true,
       id: userstate.id,
       username: username,
       message: `Subscribed!`

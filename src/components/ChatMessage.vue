@@ -1,19 +1,11 @@
 <template>
-  <div class="chat-message bg-white px-6 py-4 pb-6 mt-12 mx-4 rounded-xl relative" :class="messageFlare" :style="{
+  <div class="chat-message bg-white px-6 py-4 pb-6 mt-12 rounded-xl relative" :class="{
+    'rainbow': messageFlare === 'rainbow',
+    'w-full': !isSingleEmote,
+  }" :style="{
     transform: `rotate(${randomRotation()}deg)`
   }">
     <div class="absolute h-full w-full top-0 left-0 pointer-events-none" :class="flareColour">
-      <PetalTop
-          :classes="{
-          'w-8': true,
-          'h-8': true,
-          'top-0': true,
-          'block': true,
-          'absolute': true,
-          'rounded-full': true,
-          '-left-4': true,
-        }"
-      ></PetalTop>
       <Flower
           :classes="{
           'w-8': true,
@@ -26,17 +18,19 @@
           '-left-4': true,
         }"
       ></Flower>
-      <PetalBottom
+      <FlowerLeft
           :classes="{
-          'w-8': true,
-          'h-8': true,
-          'bottom-0': true,
-          'block': true,
-          'absolute': true,
-          'rounded-full': true,
-          '-left-4': true,
-        }"
-      ></PetalBottom>
+            'w-20': true,
+            'h-20': true,
+            'top-1/2': true,
+            '-mt-10': true,
+            'block': true,
+            'absolute': true,
+            'rounded-full': true,
+            '-left-10': true,
+          }"
+          v-if="props.tags.subscriber === true"
+      ></FlowerLeft>
       <Flower
           :classes="{
           'w-8': true,
@@ -91,6 +85,7 @@ import Host from "./Badges/Host.vue";
 import PetalTop from "./Flares/petalTop.vue";
 import PetalBottom from "./Flares/petalBottom.vue";
 import EpicKitty from "./Badges/EpicKitty.vue";
+import FlowerLeft from "./Flares/FlowerLeft.vue";
 
 const props = defineProps({
   username: {

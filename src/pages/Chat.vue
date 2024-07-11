@@ -1,5 +1,5 @@
 <template>
-  <Chat channel="piratesoftware" />
+  <Chat channel="ferretsoftware" />
 </template>
 <script setup>
 import Chat from "../components/Chat.vue";

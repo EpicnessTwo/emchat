@@ -1,5 +1,5 @@
 <template>
-  <div class="chat-message bg-white px-5 py-4 mt-12 mx-4 rounded-xl relative" :style="{
+  <div class="chat-message bg-white px-5 py-4 mt-12 mx-4 rounded-xl relative max-w-full" :class="fancy" :style="{
     transform: `rotate(${randomRotation()}deg)`
   }">
     <Flower
@@ -51,6 +51,11 @@ const props = defineProps({
     type: Boolean,
     required: false,
     default: true
+  },
+  fancy: {
+    type: String,
+    required: false,
+    default: ''
   }
 });
 
@@ -60,3 +65,43 @@ function randomRotation() {
 }
 
 </script>
+
+<style scoped>
+.chat-message:after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  background-size: 400%;
+  filter: blur(16px);
+  border-radius: 0.75rem;
+  opacity: 0.9;
+  z-index: -2;
+}
+
+.chat-message:before {
+  content: "";
+  position: absolute;
+  background: white;
+  border-radius: 0.75rem;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+.sub:after {
+  background: #A1ECD9;
+}
+
+.raid:after {
+  background: #EEEB9F;
+}
+
+.cheer:after {
+  background: #E89FEE;
+}
+</style>
