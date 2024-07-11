@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[6],{q1WW:function(t,e,n){"use strict";n.r(e);var s=n("5rCo"),a={__name:"Chat",setup:t=>({__sfc:!0,Chat:s.a})},r=n("KHd+"),u=Object(r.a)(a,(function(){return(0,this._self._c)(this._self._setupProxy.Chat,{attrs:{channel:"ferretsoftware"}})}),[],!1,null,null,null);e.default=u.exports}}]);
