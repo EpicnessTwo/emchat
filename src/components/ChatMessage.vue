@@ -60,6 +60,7 @@
       </span>
     </div>
     <p class="text-gray-800">
+      <EmoteSpam v-if="props.tags['animation-id'] === 'simmer'"></EmoteSpam>
       <template v-if="isSingleEmote">
         <component :is="Emote" :id="parsedMessage[0].id" :alt="parsedMessage[0].alt" class="!h-32 w-auto"></component>
       </template>
@@ -86,6 +87,7 @@ import PetalTop from "./Flares/petalTop.vue";
 import PetalBottom from "./Flares/petalBottom.vue";
 import EpicKitty from "./Badges/EpicKitty.vue";
 import FlowerLeft from "./Flares/FlowerLeft.vue";
+import EmoteSpam from "./Flares/EmoteSpam.vue";
 
 const props = defineProps({
   username: {
