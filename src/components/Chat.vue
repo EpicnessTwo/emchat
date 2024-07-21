@@ -56,6 +56,7 @@ const admins = [
     'EpicKittyXP',
     'grazedpoem',
     'crazedpoem',
+    'robotpoem',
     'TheLegendaryNarrator',
 ];
 
