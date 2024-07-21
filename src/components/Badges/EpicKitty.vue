@@ -1,5 +1,5 @@
 <template>
-  <img class="ml-1 inline-block" :class="classes" :src="randomEmoji" alt="EpicKittyXP" />
+  <img class="mr-1 inline-block" :class="classes" :src="randomEmoji" alt="EpicKittyXP" />
 </template>
 <script setup>
 import { defineProps } from 'vue';
