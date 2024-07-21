@@ -2,6 +2,7 @@
   <div class="chat-message bg-white px-6 py-4 pb-6 mt-12 rounded-xl relative" :class="{
     'rainbow': messageFlare === 'rainbow',
     'w-full': !isSingleEmote,
+    'text-center': isSingleEmote,
   }" :style="{
     transform: `rotate(${randomRotation()}deg)`
   }">
