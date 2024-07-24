@@ -11,6 +11,7 @@
         <ChatMessage
             :username="message.username"
             :message="message.message"
+            :stvEmotes="message.stvEmotes"
             :tags="message.tags"
             :tilt="easterEggs.tilt"
             v-if="message.type === 'message'"
@@ -44,7 +45,8 @@ const props = defineProps({
 
 const messages = ref([]);
 const vips = ref([]);
-const chatBox = ref(null)
+const chatBox = ref(null);
+let stvEmotes = {};
 const pruneLength = 20;
 const easterEggs = {
   'flip': false,
@@ -73,6 +75,7 @@ const initializeChat = () => {
   client.connect();
 
   client.on('message', (channel, tags, message, self) => {
+    let commandRan = false;
     if (admins.includes(tags['display-name'])) {
       switch (message) {
         case '~reload':
@@ -85,18 +88,23 @@ const initializeChat = () => {
           setTimeout(() => {
             window.location.reload();
           }, 5000);
+          commandRan = true;
           break;
         case '~flip':
           easterEggs.flip = !easterEggs.flip;
+          commandRan = true;
           break;
         case '~tilt':
           easterEggs.tilt = !easterEggs.tilt;
+          commandRan = true;
           break;
         case '~party':
           easterEggs.party = !easterEggs.party;
+          commandRan = true;
           break;
         case '~bg':
           easterEggs.debugBackground = !easterEggs.debugBackground;
+          commandRan = true;
           break;
         case '~fakesub':
           messages.value.push({
@@ -181,14 +189,40 @@ const initializeChat = () => {
       }
     }
 
+    if (commandRan) return;
+
     // truncate username to max of 20 characters and add ellipsis if necessary
     tags['display-name'] = tags['display-name'].length > 20 ? tags['display-name'].substring(0, 20) + '...' : tags['display-name'];
+
+    let filteredStvEmotes = {};
+    for (const word of message.split(' ')) {
+      if (stvEmotes[word]) {
+        filteredStvEmotes[word] = stvEmotes[word];
+      }
+    }
+
+    let hexMessage = message.split('').map((char) => char.charCodeAt(0).toString(16)).join(' ');
+
+    // Dear 7TV,
+    //
+    // You may think it's funny to inject invisible characters into messages to bypass sending limits, but it's not.
+    // It's not funny at all.
+    //
+    // I'm enjoying the thought of you reading this message and feeling bad about it.
+    //
+    // Sincerely,
+    // EpicKitty
+    message = message.replace(/\uDB40/g, '').replace(/\uDC00/g, '').trimEnd();
+
+
     messages.value.push({
       type: 'message',
       id: tags.id,
       username: tags['display-name'],
       message: message,
+      hexMessage: hexMessage,
       tags: tags,
+      stvEmotes: filteredStvEmotes
     });
 
     if (messages.value.length >= pruneLength) {
@@ -293,6 +327,17 @@ const initializeChat = () => {
   });
 };
 
+const initializeStvEmotes = () => {
+  fetch('https://7tv.io/v3/emote-sets/62dd39816ed60a7d8e340577').then(response => response.json()).then(data => {
+    data.emotes.forEach(emote => {
+      stvEmotes[emote.name] = {
+        id: emote.id,
+        name: emote.name
+      };
+    });
+  });
+};
+
 const scrollToBottom = () => {
   if (chatBox.value) {
     chatBox.value.scrollTop = chatBox.value.scrollHeight
@@ -303,6 +348,7 @@ onUpdated(scrollToBottom)
 setInterval(scrollToBottom, 1000);
 
 onMounted(() => {
+  initializeStvEmotes();
   initializeChat();
   scrollToBottom();
 });

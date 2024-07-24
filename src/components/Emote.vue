@@ -13,8 +13,22 @@ const props = defineProps({
   alt: {
     type: String,
     required: true
+  },
+  emoteSource: {
+    type: String,
+    required: false,
+    default: 'twitch'
   }
 });
 
-const emoteUrl = `https://static-cdn.jtvnw.net/emoticons/v2/${props.id}/default/dark/3.0`;
+let emoteUrl;
+
+switch (props.emoteSource) {
+  case 'twitch':
+    emoteUrl = `https://static-cdn.jtvnw.net/emoticons/v2/${props.id}/default/dark/3.0`;
+    break;
+  case '7tv':
+    emoteUrl = `https://cdn.7tv.app/emote/${props.id}/4x.webp`;
+    break;
+}
 </script>

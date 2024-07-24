@@ -63,12 +63,13 @@
     <p class="text-gray-800">
       <EmoteSpam v-if="props.tags['animation-id'] === 'simmer'"></EmoteSpam>
       <template v-if="isSingleEmote">
-        <component :is="Emote" :id="parsedMessage[0].id" :alt="parsedMessage[0].alt" class="!h-32 w-auto"></component>
+        <component :is="Emote" :id="parsedMessage[0].id" :alt="parsedMessage[0].alt" :emote-source="parsedMessage[0].emoteSource" class="!h-32 w-auto"></component>
       </template>
       <template v-else>
         <span v-for="part in parsedMessage" :key="part.key">
-          <component v-if="part.type === 'emote'" :is="Emote" :id="part.id" :alt="part.alt"></component>
+          <component v-if="part.type === 'emote'" :is="Emote" :id="part.id" :alt="part.alt" :emote-source="part.emoteSource"></component>
           <span v-else>{{ part.text }}</span>
+          <span class="inline-block w-1"> </span>
         </span>
       </template>
     </p>
@@ -84,8 +85,6 @@ import Mod from "./Badges/Mod.vue";
 import Sub from "./Badges/Sub.vue";
 import Vip from "./Badges/Vip.vue";
 import Host from "./Badges/Host.vue";
-import PetalTop from "./Flares/petalTop.vue";
-import PetalBottom from "./Flares/petalBottom.vue";
 import EpicKitty from "./Badges/EpicKitty.vue";
 import FlowerLeft from "./Flares/FlowerLeft.vue";
 import EmoteSpam from "./Flares/EmoteSpam.vue";
@@ -107,6 +106,11 @@ const props = defineProps({
     type: Boolean,
     required: false,
     default: true
+  },
+  stvEmotes: {
+    type: Object,
+    required: false,
+    default: () => ({})
   }
 });
 
@@ -147,7 +151,22 @@ const parsedMessage = computed(() => parseMessage(props.message, props.tags.emot
 const isSingleEmote = computed(() => parsedMessage.value.length === 1 && parsedMessage.value[0].type === 'emote');
 
 function parseMessage(message, emotes) {
-  if (!emotes) return [{ type: 'text', text: message, key: 'text-0' }];
+  let response = message;
+
+  response = parseMessageTwitch(response, emotes); // Parse Twitch emotes
+  response = parseMessage7tv(response, props.stvEmotes); // Parse 7TV emotes
+
+  return response;
+}
+
+function parseMessageTwitch(message, emotes) {
+  if (!emotes) {
+    return message.split(/\s+/).map((word, index) => ({
+      type: 'text',
+      text: word,
+      key: `text-${index}`
+    }));
+  }
 
   const emotePositions = [];
   for (const emoteId in emotes) {
@@ -164,14 +183,20 @@ function parseMessage(message, emotes) {
   let lastIndex = 0;
   emotePositions.forEach(({ start, end, id }, index) => {
     if (start > lastIndex) {
-      parsed.push({
-        type: 'text',
-        text: message.substring(lastIndex, start),
-        key: `text-${lastIndex}`
+      const textPart = message.substring(lastIndex, start);
+      textPart.split(/\s+/).forEach((word, wordIndex) => {
+        if (word) {
+          parsed.push({
+            type: 'text',
+            text: word,
+            key: `text-${lastIndex + wordIndex}`
+          });
+        }
       });
     }
     parsed.push({
       type: 'emote',
+      emoteSource: 'twitch',
       id,
       alt: message.substring(start, end + 1),
       key: `emote-${index}`
@@ -180,12 +205,40 @@ function parseMessage(message, emotes) {
   });
 
   if (lastIndex < message.length) {
-    parsed.push({
-      type: 'text',
-      text: message.substring(lastIndex),
-      key: `text-${lastIndex}`
+    const textPart = message.substring(lastIndex);
+    textPart.split(/\s+/).forEach((word, wordIndex) => {
+      if (word) {
+        parsed.push({
+          type: 'text',
+          text: word,
+          key: `text-${lastIndex + wordIndex}`
+        });
+      }
     });
   }
+
+  return parsed;
+}
+
+function parseMessage7tv(message, emotes) {
+  const parsed = [];
+
+  message.forEach((part) => {
+    if (part.type === 'text') {
+      if (emotes[part.text]) {
+        parsed.push({
+          type: 'emote',
+          emoteSource: '7tv',
+          id: emotes[part.text].id,
+          alt: part.text
+        });
+      } else {
+        parsed.push(part);
+      }
+    } else {
+      parsed.push(part);
+    }
+  });
 
   return parsed;
 }
