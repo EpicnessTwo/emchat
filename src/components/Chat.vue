@@ -14,6 +14,8 @@
             :stvEmotes="message.stvEmotes"
             :tags="message.tags"
             :tilt="easterEggs.tilt"
+            :halloween="easterEggs.halloween"
+            :oddEven="message.oddEven"
             v-if="message.type === 'message'"
             v-once
         ></ChatMessage>
@@ -22,6 +24,8 @@
           :message="message.message"
           :fancy="message.fancy"
           :tilt="easterEggs.tilt"
+          :halloween="easterEggs.halloween"
+          :oddEven="message.oddEven"
           v-if="message.type === 'notice'"
           v-once
       ></ChatNotice>
@@ -53,6 +57,7 @@ const easterEggs = {
   'tilt': true,
   'party': false,
   'debugBackground': false,
+  'halloween': false,
 };
 const admins = [
     'EpicKittyXP',
@@ -61,6 +66,7 @@ const admins = [
     'robotpoem',
     'TheLegendaryNarrator',
 ];
+const oddEven = ref(false);
 
 const initializeChat = () => {
   const client = new tmi.Client({
@@ -104,6 +110,10 @@ const initializeChat = () => {
           break;
         case '~bg':
           easterEggs.debugBackground = !easterEggs.debugBackground;
+          commandRan = true;
+          break;
+        case '~spooky':
+          easterEggs.halloween = !easterEggs.halloween;
           commandRan = true;
           break;
         case '~fakesub':
@@ -189,7 +199,7 @@ const initializeChat = () => {
       }
     }
 
-    if (commandRan) return;
+    // if (commandRan) return; // Broken
 
     // truncate username to max of 20 characters and add ellipsis if necessary
     tags['display-name'] = tags['display-name'].length > 20 ? tags['display-name'].substring(0, 20) + '...' : tags['display-name'];
@@ -222,8 +232,11 @@ const initializeChat = () => {
       message: message,
       hexMessage: hexMessage,
       tags: tags,
-      stvEmotes: filteredStvEmotes
+      stvEmotes: filteredStvEmotes,
+      oddEven: oddEven.value,
     });
+
+    oddEven.value = !oddEven.value;
 
     if (messages.value.length >= pruneLength) {
       messages.value = messages.value.slice(-pruneLength);

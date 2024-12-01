@@ -1,8 +1,11 @@
 <template>
-  <div class="chat-message bg-white px-6 py-4 pb-6 mt-12 rounded-xl relative" :class="{
+  <div class="chat-message px-6 py-4 pb-6 mt-12 rounded-xl relative" :class="{
     'rainbow': messageFlare === 'rainbow',
-    'w-full': !isSingleEmote,
-    'text-center': isSingleEmote,
+    'w-full': !isSingleEmote && !isDualEmote,
+    'text-center': isSingleEmote || isDualEmote,
+    'bg-orange-600': props.halloween && props.oddEven,
+    'bg-slate-900': props.halloween && !props.oddEven,
+    'bg-white' : !props.halloween,
   }" :style="{
     transform: `rotate(${randomRotation()}deg)`
   }">
@@ -60,10 +63,17 @@
         {{ username }}
       </span>
     </div>
-    <p class="text-gray-800">
+    <p :class="{
+      'text-white': props.halloween,
+      'text-gray-800': !props.halloween
+    }">
       <EmoteSpam v-if="props.tags['animation-id'] === 'simmer'"></EmoteSpam>
       <template v-if="isSingleEmote">
         <component :is="Emote" :id="parsedMessage[0].id" :alt="parsedMessage[0].alt" :emote-source="parsedMessage[0].emoteSource" class="!h-32 w-auto"></component>
+      </template>
+      <template v-else-if="isDualEmote">
+        <component :is="Emote" :id="parsedMessage[0].id" :alt="parsedMessage[0].alt" :emote-source="parsedMessage[0].emoteSource" class="!h-32 w-auto"></component>
+        <component :is="Emote" :id="parsedMessage[1].id" :alt="parsedMessage[1].alt" :emote-source="parsedMessage[1].emoteSource" class="!h-32 w-auto"></component>
       </template>
       <template v-else>
         <span v-for="part in parsedMessage" :key="part.key">
@@ -107,6 +117,16 @@ const props = defineProps({
     required: false,
     default: true
   },
+  halloween: {
+    type: Boolean,
+    required: false,
+    default: false
+  },
+  oddEven: {
+    type: Boolean,
+    required: false,
+    default: false
+  },
   stvEmotes: {
     type: Object,
     required: false,
@@ -149,6 +169,7 @@ if (props.tags['animation-id'] === 'rainbow-eclipse') {
 
 const parsedMessage = computed(() => parseMessage(props.message, props.tags.emotes));
 const isSingleEmote = computed(() => parsedMessage.value.length === 1 && parsedMessage.value[0].type === 'emote');
+const isDualEmote = computed(() => parsedMessage.value.length === 2 && parsedMessage.value[0].type === 'emote' && parsedMessage.value[1].type === 'emote');
 
 function parseMessage(message, emotes) {
   let response = message;

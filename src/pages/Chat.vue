@@ -1,5 +1,5 @@
 <template>
-  <Chat channel="ferretsoftware" />
+  <Chat channel="grazedpoem" />
 </template>
 <script setup>
 import Chat from "../components/Chat.vue";
